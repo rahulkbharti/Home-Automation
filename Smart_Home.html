@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>Smart Home</title>
+    <link rel="stylesheet" href="css/bootstrap.css" type="text/css" media="all" />
+    <style type="text/css" media="all">
+     body{
+        padding:14px;
+     }
+      table,tr,td{
+        border-collapse:collapse;
+      }
+      table{
+        width:100%;
+      }
+      table td {
+        padding:5px;
+      }
+      button{
+        border-radius:5px;
+        border:.1px solid black;
+      }
+    </style>
+  </head>
+  <body>
+   <div class="container" style="width:360px">
+     <center>
+       <h1>Smart Home</h1>
+       <p>Automatic Home Lights</p>
+     </center>
+      <table border="0">
+         <table border="0">
+           <tr>
+             <td>Connection Status</td>
+             <td id="cName"><button type="button" onclick="getDevice()">Search</button></td>
+             <td rowspan="2">
+                 <b>Arduino Time</b>
+                 <h2 id="time">00:00:00</h2>
+                 <div id="demo"></div>
+                 
+             </td>
+           </tr>
+           <tr>
+             <td>Automatic Mode</td>
+             <td>
+               <div class="form-check form-switch">
+                 <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" onchange="AT_switch(this.checked)">
+               </div>
+             </td>
+           </tr>
+           <tr>
+             <td>Timer Mode</td>
+             <td>
+               <div class="form-check form-switch">
+                 <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" onchange="TM_switch(this.checked)">
+               </div>
+             </td>
+           </tr>
+           <tr>
+             <td>Set Time :
+             <td>
+              <input type="button" style="width:74px" value="update" onclick="Time_update()"/></td>
+             </td>
+             
+           </tr>
+         </table>
+      </table>
+      <br />
+      <ul class="nav nav-tabs" id="myTab" role="tablist">
+  <li class="nav-item" role="presentation">
+    <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true"><b>Manual</b></button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false"><b>Automatic</b></button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact" type="button" role="tab" aria-controls="contact" aria-selected="false"><b>Timer</b></button>
+  </li>
+</ul>
+      <div class="tab-content py-4" id="myTabContent">
+  <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+      <h4>All are digital pins</h4>
+        <div class="d-flex justify-content-around flex-row flex-wrap">
+      <div class="form-check form-switch py-2">
+          PIN 4 <input class="form-check-input" type="checkbox" onchange="MN_switch(this,4)">
+      </div>
+      <div class="form-check form-switch py-2">
+          PIN 5 <input class="form-check-input" type="checkbox" onchange="MN_switch(this,5)">
+      </div>
+      <div class="form-check form-switch py-2">
+          PIN 6 <input class="form-check-input" type="checkbox" onchange="MN_switch(this,6)">
+      </div>
+      <div class="form-check form-switch py-2">
+          PIN 7 <input class="form-check-input" type="checkbox" onchange="MN_switch(this,7)">
+      </div>
+      <div class="form-check form-switch py-2">
+          PIN 8<input class="form-check-input" type="checkbox" onchange="MN_switch(this,8)">
+      </div>
+      <div class="form-check form-switch py-2">
+          PIN 9 <input class="form-check-input" type="checkbox" onchange="MN_switch(this,9)">
+      </div>
+      <div class="form-check form-switch py-2">
+          PIN 10 <input class="form-check-input" type="checkbox" onchange="MN_switch(this,10)">
+      </div>
+      <div class="form-check form-switch py-2">
+          PIN 11 <input class="form-check-input" type="checkbox" onchange="MN_switch(this,11)">
+      </div>
+      <div class="form-check form-switch py-2">
+          PIN 12 <input class="form-check-input" type="checkbox" onchange="MN_switch(this,12)">
+      </div>
+      <div class="form-check form-switch py-2">
+          PIN 13 <input class="form-check-input" type="checkbox" onchange="MN_switch(this,13)">
+      </div>
+   
+  </div>
+  </div>
+  <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+      
+      <div class="d-flex align-items-start">
+  <div class="nav flex-column nav-pills me-3 py-4" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+    <button class="nav-link active" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#v-pills-home" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true">SETUP 1</button>
+    <button class="nav-link" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#v-pills-profile" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="false">SETUP 2</button>
+    <button class="nav-link" id="v-pills-messages-tab" data-bs-toggle="pill" data-bs-target="#v-pills-messages" type="button" role="tab" aria-controls="v-pills-messages" aria-selected="false">SETUP 3</button>
+    <button class="nav-link" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false">SETUP 4</button>
+  </div>
+  <div class="tab-content" id="v-pills-tabContent">
+
+    <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
+       <div class="p-2">
+         <select name="AT_IN" id="AT_IN">
+           <option value="0">Input Pin 0</option>
+           <option value="1">Input Pin 1</option>
+           <option value="2">Input Pin 2</option>
+           <option value="3">Input Pin 3</option>
+           <option value="4">Input Pin 4</option>
+           <option value="5">Input Pin 5</option>
+           <option value="6">Input Pin 6</option>
+           <option value="7">Input Pin 7</option>
+         </select>
+         <select name="AT_OT" id="AT_OT">
+           <option value="4">Output Pin 4</option>
+           <option value="5">Output Pin 5</option>
+           <option value="6">Output Pin 6</option>
+           <option value="7">Output Pin 7</option>
+           <option value="8">Output Pin 8</option>
+           <option value="9">Output Pin 9</option>
+           <option value="10">Output Pin 10</option>
+           <option value="11">Output Pin 11</option>
+           <option value="12">Output Pin 12</option>
+           <option value="13">Output Pin 13</option>
+         </select>
+         <input type="range" name="AT_OV" id="AT_OV" value="0" min="0" max="1000" onchange="console.log(this.value)"/>
+            <div class="form-check form-switch">
+                 Status ON/OFF <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+            </div>
+            <div class="form-check form-switch">
+                 Mode ON/OFF <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+            </div>
+            <br />
+            <br />
+            <button type="button" onclick="AT_update(this,0)">update</button>
+       </div>
+    </div>
+    <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
+       <div class="p-2">
+         <select name="AT_IN" id="AT_IN">
+           <option value="0">Input Pin 0</option>
+           <option value="1">Input Pin 1</option>
+           <option value="2">Input Pin 2</option>
+           <option value="3">Input Pin 3</option>
+           <option value="4">Input Pin 4</option>
+           <option value="5">Input Pin 5</option>
+           <option value="6">Input Pin 6</option>
+           <option value="7">Input Pin 7</option>
+         </select>
+         <select name="AT_OT" id="AT_OT">
+           <option value="4">Output Pin 4</option>
+           <option value="5">Output Pin 5</option>
+           <option value="6">Output Pin 6</option>
+           <option value="7">Output Pin 7</option>
+           <option value="8">Output Pin 8</option>
+           <option value="9">Output Pin 9</option>
+           <option value="10">Output Pin 10</option>
+           <option value="11">Output Pin 11</option>
+           <option value="12">Output Pin 12</option>
+           <option value="13">Output Pin 13</option>
+         </select>
+         <input type="range" name="AT_OV" id="AT_OV" value="0" min="0" max="1000" onchange="console.log(this.value)"/>
+            <div class="form-check form-switch">
+                 Status ON/OFF <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+            </div>
+            <div class="form-check form-switch">
+                 Mode ON/OFF <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+            </div>
+            <br />
+            <br />
+            <button type="button" onclick="AT_update(this,1)">update</button>
+       </div>
+    </div>
+    <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab">
+       <div class="p-2">
+         <select name="AT_IN" id="AT_IN">
+           <option value="0">Input Pin 0</option>
+           <option value="1">Input Pin 1</option>
+           <option value="2">Input Pin 2</option>
+           <option value="3">Input Pin 3</option>
+           <option value="4">Input Pin 4</option>
+           <option value="5">Input Pin 5</option>
+           <option value="6">Input Pin 6</option>
+           <option value="7">Input Pin 7</option>
+         </select>
+         <select name="AT_OT" id="AT_OT">
+           <option value="4">Output Pin 4</option>
+           <option value="5">Output Pin 5</option>
+           <option value="6">Output Pin 6</option>
+           <option value="7">Output Pin 7</option>
+           <option value="8">Output Pin 8</option>
+           <option value="9">Output Pin 9</option>
+           <option value="10">Output Pin 10</option>
+           <option value="11">Output Pin 11</option>
+           <option value="12">Output Pin 12</option>
+           <option value="13">Output Pin 13</option>
+         </select>
+         <input type="range" name="AT_OV" id="AT_OV" value="0" min="0" max="1000" onchange="console.log(this.value)"/>
+            <div class="form-check form-switch">
+                 Status ON/OFF <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+            </div>
+            <div class="form-check form-switch">
+                 Mode ON/OFF <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+            </div>
+            <br />
+            <br />
+            <button type="button" onclick="AT_update(this,2)">update</button>
+       </div>
+    </div>
+    <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab">
+       <div class="p-2">
+         <select name="AT_IN" id="AT_IN">
+           <option value="0">Input Pin 0</option>
+           <option value="1">Input Pin 1</option>
+           <option value="2">Input Pin 2</option>
+           <option value="3">Input Pin 3</option>
+           <option value="4">Input Pin 4</option>
+           <option value="5">Input Pin 5</option>
+           <option value="6">Input Pin 6</option>
+           <option value="7">Input Pin 7</option>
+         </select>
+         <select name="AT_OT" id="AT_OT">
+           <option value="4">Output Pin 4</option>
+           <option value="5">Output Pin 5</option>
+           <option value="6">Output Pin 6</option>
+           <option value="7">Output Pin 7</option>
+           <option value="8">Output Pin 8</option>
+           <option value="9">Output Pin 9</option>
+           <option value="10">Output Pin 10</option>
+           <option value="11">Output Pin 11</option>
+           <option value="12">Output Pin 12</option>
+           <option value="13">Output Pin 13</option>
+         </select>
+         <input type="range" name="AT_OV" id="AT_OV" value="0" min="0" max="1000" onchange="console.log(this.value)"/>
+            <div class="form-check form-switch">
+                 Status ON/OFF <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+            </div>
+            <div class="form-check form-switch">
+                 Mode ON/OFF <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+            </div>
+            <br />
+            <br />
+            <button type="button" onclick="AT_update(this,3)">update</button>
+       </div>
+    </div>
+  </div>
+</div>
+      
+  </div>
+  <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+    <div class="d-flex align-items-start">
+  <div class="nav flex-column nav-pills me-3 py-4" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+    <button class="nav-link active" id="v-pills-home-tab1" data-bs-toggle="pill" data-bs-target="#v-pills-home1" type="button" role="tab" aria-controls="v-pills-home1" aria-selected="true">INTERVAL 1</button>
+    <button class="nav-link" id="v-pills-profile-tab1" data-bs-toggle="pill" data-bs-target="#v-pills-profile1" type="button" role="tab" aria-controls="v-pills-profile1" aria-selected="false">INTERVAL 2</button>
+    <button class="nav-link" id="v-pills-messages-tab1" data-bs-toggle="pill" data-bs-target="#v-pills-messages1" type="button" role="tab" aria-controls="v-pills-messages1" aria-selected="false">INTERVAL 3</button>
+    <button class="nav-link" id="v-pills-settings-tab1" data-bs-toggle="pill" data-bs-target="#v-pills-settings1" type="button" role="tab" aria-controls="v-pills-settings1" aria-selected="false">INTERVAL 4</button>
+  </div>
+  <div class="tab-content" id="v-pills-tabContent1">
+       
+    <div class="tab-pane fade show active" id="v-pills-home1" role="tabpanel" aria-labelledby="v-pills-home-tab1">
+       <div class="p-2">
+         <select name="AT_OT" id="AT_OT">
+           <option value="4">Output Pin 4</option>
+           <option value="5">Output Pin 5</option>
+           <option value="6">Output Pin 6</option>
+           <option value="7">Output Pin 7</option>
+           <option value="8">Output Pin 8</option>
+           <option value="9">Output Pin 9</option>
+           <option value="10">Output Pin 10</option>
+           <option value="11">Output Pin 11</option>
+           <option value="12">Output Pin 12</option>
+           <option value="13">Output Pin 13</option>
+         </select>
+         <br />
+          Start Time : <input type="time" value="00:01" />
+          <br />
+          Stop Time : <input type="time" value="00:02" />
+                      <div class="form-check form-switch">
+          <br />
+          Status ON/OFF <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+            </div>
+           <br>
+           <button type="button" onclick="TM_update(this,0)">update</button>
+       </div>
+    </div>
+    <div class="tab-pane fade" id="v-pills-profile1" role="tabpanel" aria-labelledby="v-pills-profile-tab1">
+       <div class="p-2">
+         <select name="AT_OT" id="AT_OT">
+           <option value="4">Output Pin 4</option>
+           <option value="5">Output Pin 5</option>
+           <option value="6">Output Pin 6</option>
+           <option value="7">Output Pin 7</option>
+           <option value="8">Output Pin 8</option>
+           <option value="9">Output Pin 9</option>
+           <option value="10">Output Pin 10</option>
+           <option value="11">Output Pin 11</option>
+           <option value="12">Output Pin 12</option>
+           <option value="13">Output Pin 13</option>
+         </select>
+         <br />
+          Start Time : <input type="time" value="00:01" />
+          <br />
+          Stop Time : <input type="time" value="00:02" />
+                      <div class="form-check form-switch">
+          <br />
+          Status ON/OFF <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+            </div>
+           <br>
+           <button type="button" onclick="TM_update(this,1)">update</button>
+       </div>
+    </div>
+    <div class="tab-pane fade" id="v-pills-messages1" role="tabpanel" aria-labelledby="v-pills-messages-tab1">
+       <div class="p-2">
+          <select name="AT_OT" id="AT_OT">
+           <option value="4">Output Pin 4</option>
+           <option value="5">Output Pin 5</option>
+           <option value="6">Output Pin 6</option>
+           <option value="7">Output Pin 7</option>
+           <option value="8">Output Pin 8</option>
+           <option value="9">Output Pin 9</option>
+           <option value="10">Output Pin 10</option>
+           <option value="11">Output Pin 11</option>
+           <option value="12">Output Pin 12</option>
+           <option value="13">Output Pin 13</option>
+         </select>
+         <br />
+          Start Time : <input type="time" value="00:01" />
+          <br />
+          Stop Time : <input type="time" value="00:02" />
+                      <div class="form-check form-switch">
+          <br />
+          Status ON/OFF <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+            </div>
+           <br>
+           <button type="button" onclick="TM_update(this,2)">update</button>
+       </div>
+    </div>
+    <div class="tab-pane fade" id="v-pills-settings1" role="tabpanel" aria-labelledby="v-pills-settings-tab1">
+       <div class="p-2">
+          <select name="AT_OT" id="AT_OT">
+           <option value="4">Output Pin 4</option>
+           <option value="5">Output Pin 5</option>
+           <option value="6">Output Pin 6</option>
+           <option value="7">Output Pin 7</option>
+           <option value="8">Output Pin 8</option>
+           <option value="9">Output Pin 9</option>
+           <option value="10">Output Pin 10</option>
+           <option value="11">Output Pin 11</option>
+           <option value="12">Output Pin 12</option>
+           <option value="13">Output Pin 13</option>
+         </select>
+         <br />
+          Start Time : <input type="time" value="00:01" />
+          <br />
+          Stop Time : <input type="time" value="00:02" />
+                      <div class="form-check form-switch">
+          <br />
+          Status ON/OFF <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+            </div>
+           <br>
+           <button type="button" onclick="TM_update(this,3)">update</button>
+       </div>
+    </div>
+  </div>
+</div>
+  </div>
+</div>
+   </div>
+    
+
+
+
+<script src="js/bootstrap.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" charset="utf-8">
+  
+  var channel = undefined ;
+  async function getDevice(){
+    var device =  await navigator.bluetooth.requestDevice({
+          acceptAllDevices :true,
+          optionalServices :["0000ffe0-0000-1000-8000-00805f9b34fb"],
+      });
+      //console.log("device",device)
+    var server = await device.gatt.connect();
+        console.log("Device Connected")
+       console.log(server)
+        
+    var service = await server.getPrimaryServices();
+        console.log(service)
+        service.ongattserverdisconnected = e=>{
+          console.log("disconnect")
+        }
+     channel = await service[0].getCharacteristics();
+        //console.log(char)
+        channel[0].oncharacteristicvaluechanged = e =>{
+          //  console.log(e.target.value);
+          var data =read(e.target.value);
+             // demo.innerHTML = data;
+              cName.innerHTML= device.name+"<br/>"+"<b>Connected<b/>"
+              dMan(data);
+        }
+        channel[0].startNotifications();
+       var d = document.getElementsByClassName("form-check-input");
+        console.log(d);
+        for(var i=0;i < d.length;i++){
+           d[i].disabled = false;
+        }
+  }
+ function read(x){
+   let decoder = new TextDecoder()
+   let value =  decoder.decode(x)
+   //  console.log(decoder,value)  
+     return value
+ } 
+ function write(x){
+   let encoder = new TextEncoder();
+   let value = encoder.encode(x) 
+    //  console.log(encoder,value)
+       return value;
+ }
+ 
+ 
+ function dMan(x){
+  var data = x.split("#");
+    if(data[0] == "TIME"){
+        //console.log(data)
+        var dt = data[1].split(":");
+        time.innerHTML= check_dt(dt[0])+":"+check_dt(dt[1])+":"+check_dt(dt[2]);
+    }
+    else if(data[0] == "ATU" ){
+        var dt = data[6].split(":");
+        time.innerHTML= check_dt(dt[0])+":"+check_dt(dt[1])+":"+check_dt(dt[2]);
+        // Any other data
+    }
+    else if(data[0] == "TMU"){
+       var dt = data[6].split(":");
+        time.innerHTML= check_dt(dt[0])+":"+check_dt(dt[1])+":"+check_dt(dt[2]);
+        // Any Other work
+    }
+    else{
+       demo.innerHTML = x
+    }
+ }
+</script>
+<script type="text/javascript" charset="utf-8">
+function check_dt(x){
+    if(x < 10){
+       return "0"+x;
+    }
+    else{
+       return x;
+    }
+  }
+function check_tp(x){
+    if(x < 10){
+       return "00"+x;
+    }
+    else if(x < 100){
+       return "0"+x;
+    }
+    else{
+       return x;
+    }
+  }
+function bool(x){
+  if(x == true){
+    return "t";
+  }
+  else{
+    return "f";
+  }
+}
+  function AT_switch(x){
+    //console.log(x)
+  if(channel != undefined){
+      if(x == true ){
+         channel[1].writeValue(write("AT#N"))
+         console.log("AT#N")
+      }
+      else{
+         channel[1].writeValue(write("AT#F"))
+         console.log("AT#F")
+      }
+   }
+  else{
+     alert("device not connected")
+   }
+  }
+  function AT_update(x,i){
+   var data= x.parentElement.childNodes;
+     //console.log(data)
+    var status = data[7].childNodes[1].checked;
+    var input = data[1].value;
+    var output = data[3].value;
+    var oValue = data[5].value;
+    var mode = data[9].childNodes[1].checked;
+    
+      var cmd = "AT#"+i+"#"+bool(status)+"#"+input+"#"+check_dt(output)+"#"+check_tp(oValue)+"#"+bool(mode);
+      console.log(cmd)
+    if(channel != undefined){
+      channel[1].writeValue(write(cmd))
+    }
+    else{
+      alert("Device No Connected")
+    }
+    //console.log(i,input,output,oValue,status,mode)
+  }
+  function TM_switch(x){
+    //console.log(x)
+   if(channel != undefined){
+      if(x == true ){
+         channel[1].writeValue(write("TM#N"))
+         console.log("TM#N")
+      }
+      else{
+         channel[1].writeValue(write("TM#F"))
+         console.log("TM#F")
+      }
+   }
+  else{
+     alert("device not connected")
+   }
+  }
+  function TM_update(x,i){
+    var data= x.parentElement.childNodes;
+    //console.log(data)
+    var oPin = data[1].value;
+    var start = data[5].value;
+    var stop = data[9].value;
+    var status = data[11].childNodes[3].checked;
+    
+      var cmd = "TM#"+i+"#"+bool(status)+"#"+start+"#"+stop+"#"+check_dt(oPin);
+      console.log(cmd)
+    if(channel !=undefined){
+       channel[1].writeValue(write(cmd));
+    }
+    else{
+       alert('device not connected');
+    }
+    //console.log(i,start,stop,status)
+  }
+  
+  function MN_switch(x,i){
+    console.log(x.checked,i)
+    if(channel[1]){
+       if(x.checked == true){
+        channel[1].writeValue(write("MN#"+check_dt(i)+"#"+1));
+       }
+       else{
+        channel[1].writeValue(write("MN#"+check_dt(i)+"#"+0));
+       // channel[1].writeValue(write("MN#13#0"));
+       }
+    }
+  }
+  function Time_update(){
+      var now = new Date();
+      var h = now.getHours();
+      var m = now.getMinutes();
+      var s = now.getSeconds();
+      if(channel != undefined){
+        var cmd = "TS#"+check_dt(h)+":"+check_dt(m)+":"+check_dt(s);
+         channel[1].writeValue(write(cmd))
+      }
+  }
+  function Sync(target){
+    
+  }
+  
+  
+  
+  
+</script>
+<script type="text/javascript" charset="utf-8">
+  window.onload = () =>{
+    var d = document.getElementsByClassName("form-check-input");
+        //console.log(d);
+        for(var i=0;i < d.length;i++){
+           d[i].disabled = true;
+        }
+  }
+</script>
+
+
+
+  </body>
+</html>
